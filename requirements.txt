@@ -1,0 +1,3 @@
+Flask==2.3.2
+python-whois==1.4.3
+reportlab==3.6.1
