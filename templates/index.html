@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Availability Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="my-4">
+            <h1>Domain Availability Checker</h1>
+        </header>
+        <form action="/" method="POST" class="form-container">
+            <div class="input-group mb-3">
+                <span class="input-group-icon material-icons-outlined">search</span>
+                <input type="text" name="domain_name" placeholder="Enter Domain Name" class="form-control" required>
+            </div>
+            <button type="submit" class="btn">Check Availability</button>
+        </form>
+        {% if specific_domain_result %}
+        <div class="result mt-4">
+            <p>The domain <strong>{{ specific_domain_result['domain'] }}</strong> is 
+                <strong>{{ 'available' if specific_domain_result['available'] else 'not available' }}</strong>
+                {% if specific_domain_result['available'] %}
+                <i class="fas fa-check" style="color: #4cc89e;"></i>
+                {% else %}
+                <i class="fas fa-times" style="color: #d76742;"></i>
+                {% endif %}
+            </p>
+            {% if specific_domain_result['available'] %}
+            <a href="https://wa.me/YOUR_PHONE_NUMBER?text=I%20want%20to%20buy%20the%20domain%20{{ specific_domain_result['domain'] }}" class="btn btn-buy">
+                <span class="material-icons-outlined">shopping_cart</span> Buy Now
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        {% if results %}
+        <div class="result mt-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for domain, is_available in results.items() %}
+                    <tr>
+                        <td>{{ domain }}</td>
+                        <td>
+                            {{ 'Available' if is_available else 'Unavailable' }}
+                            {% if is_available %}
+                            <i class="fas fa-check" style="color: #4cc89e;"></i>
+                            {% else %}
+                            <i class="fas fa-times" style="color: #d76742;"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if is_available %}
+                            <a href="https://wa.me/YOUR_PHONE_NUMBER?text=I%20want%20to%20buy%20the%20domain%20{{ domain }}" class="btn btn-buy">
+                                <span class="material-icons-outlined">shopping_cart</span> Buy Now
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form action="/export" method="POST">
+                <input type="hidden" name="results" value="{{ results }}">
+                <button type="submit" class="btn btn-secondary">Export to PDF</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

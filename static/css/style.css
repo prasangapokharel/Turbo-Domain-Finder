@@ -1,0 +1,158 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background:  linear-gradient(135deg, #f0f0f5, #cce7ff);
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+header h1 {
+    margin: 0 0 20px;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 25px;
+    padding: 10px;
+    background: white;
+}
+
+.input-group-icon {
+    margin-right: 10px;
+    color: #333;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 25px;
+}
+
+.btn {
+    background-color: #10a37f;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    background-color: #0e8a68;
+}
+
+.btn-buy {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-buy .material-icons-outlined {
+    margin-right: 5px;
+    font-size: 20px;
+}
+p.strong{
+    font-size: larger;
+}
+.btn-secondary{
+    margin-top: 10px;
+    background-color: #333;
+    border-radius: 4px;
+}
+.result {
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .input-group input {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .btn-buy {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .table th, .table td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
