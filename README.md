@@ -29,5 +29,5 @@ pip install -r requirements.txt
 ```bash
 flask run
 ```
-
-
+##Contact
+Make sure to replace `[prasangaramanpokharel@gmail.com]` with your actual contact email or remove the contact section if you prefer not to include it.

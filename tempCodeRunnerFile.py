@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request, session, jsonify, send_file
+from flask import Flask, render_template, request, send_file
 import whois
 import io
 from reportlab.pdfgen import canvas
 import concurrent.futures
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Needed for session management
 
 EXTENSIONS = ['.com', '.net', '.org', '.info', '.io']
 

@@ -1,7 +1,8 @@
 body {
     font-family: 'Arial', sans-serif;
-    background:  linear-gradient(135deg, #f0f0f5, #cce7ff);
-    background-size: cover;
+background-color: #e5e5f7;
+opacity: 0.7;
+background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 4px ), repeating-linear-gradient( #7cff9d55, #f7fff9 );    background-size: cover;
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,9 +12,9 @@ body {
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.826);
     padding: 40px;
-    border-radius: 16px;
+    border-radius: 8px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 800px;
@@ -156,3 +157,55 @@ p.strong{
         font-size: 0.85rem;
     }
 }
+/* The switch - the box around the slider */
+.switch {
+    font-size: 17px;
+    position: relative;
+    display: inline-block;
+    width: 62px;
+    height: 35px;
+   }
+   
+   /* Hide default HTML checkbox */
+   .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+   }
+   
+   /* The slider */
+   .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    transition: .4s;
+    border-radius: 30px;
+   }
+   
+   .slider:before {
+    position: absolute;
+    content: "";
+    height: 1.9em;
+    width: 1.9em;
+    border-radius: 16px;
+    left: 1.2px;
+    top: 0;
+    bottom: 0;
+    background-color: white;
+    box-shadow: 0 2px 5px #999999;
+    transition: .4s;
+   }
+   
+   input:checked + .slider {
+    background-color: #5fdd54;
+    border: 1px solid transparent;
+   }
+   
+   input:checked + .slider:before {
+    transform: translateX(1.5em);
+   } 
+   
