@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #2c2c2c, #121212);
+    background: rgba(50, 50, 50, 0.9);
     background-size: cover;
     margin: 0;
     padding: 0;
@@ -15,7 +15,6 @@ body {
     background: rgba(50, 50, 50, 0.9);
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     width: 90%;
     max-width: 800px;
     text-align: center;

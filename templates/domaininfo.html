@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" id="theme-link">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css') }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleSwitch = document.querySelector('.switch input[type="checkbox"]');
+            const themeLink = document.getElementById('theme-link');
+            const form = document.querySelector('form');
+            const loader = document.getElementById('wifi-loader');
+            const overlay = document.getElementById('overlay');
+
+            toggleSwitch.addEventListener('change', function() {
+                if (toggleSwitch.checked) {
+                    themeLink.href = '{{ url_for("static", filename="css/darkmode.css") }}';
+                } else {
+                    themeLink.href = '{{ url_for("static", filename="css/style.css") }}';
+                }
+            });
+
+            form.addEventListener('submit', function(event) {
+                loader.style.display = 'flex'; // Show loader
+                overlay.style.display = 'block'; // Show overlay
+
+                // To prevent the default form submission and manage it with JavaScript
+                event.preventDefault();
+                
+                // Submit the form using Fetch API
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Update the content with the new HTML
+                    document.body.innerHTML = html;
+                })
+                .finally(() => {
+                    loader.style.display = 'none'; // Hide loader
+                    overlay.style.display = 'none'; // Hide overlay
+                });
+            });
+        });
+    </script>
+    <style>
+        .switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .result {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        strong{
+            color: #333;
+
+        }
+        .card {
+            background: transparent;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+        .card h2 {
+            color: black;
+
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+        .card ul li {
+            color: grey;
+
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .card ul li:last-child {
+            border-bottom: none;
+        }
+        .card ul li strong {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <header class="my-4">
+            <h1>DOMAIN INFORMATION</h1>
+        </header>
+        <form action="/domaininfo" method="POST" class="form-container">
+            <div class="input-group mb-3">
+                <span class="input-group-icon material-icons-outlined">search</span>
+                <input type="text" name="domain_name" placeholder="Enter Domain Name" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-success">Get Information</button>
+        </form>
+
+        {% if domain_info %}
+        <div class="result">
+            <div class="card">
+                <h2>Domain Details</h2>
+                {% if domain_info.error %}
+                    <p>Error: {{ domain_info.error }}</p>
+                {% else %}
+                    <ul>
+                        <li><strong>Name:</strong> <span>{{ domain_info.name }}</span></li>
+                        <li><strong>TLD:</strong> <span>{{ domain_info.tld }}</span></li>
+                        <li><strong>Registrar:</strong> <span>{{ domain_info.registrar }}</span></li>
+                        <li><strong>Registrant Country:</strong> <span>{{ domain_info.registrant_country or 'N/A' }}</span></li>
+                        <li><strong>Creation Date:</strong> <span>{{ domain_info.creation_date.strftime('%Y-%m-%d %H:%M:%S') if domain_info.creation_date else 'N/A' }}</span></li>
+                        <li><strong>Expiration Date:</strong> <span>{{ domain_info.expiration_date.strftime('%Y-%m-%d %H:%M:%S') if domain_info.expiration_date else 'N/A' }}</span></li>
+                        <li><strong>Last Updated:</strong> <span>{{ domain_info.last_updated[0].strftime('%Y-%m-%d %H:%M:%S') if domain_info.last_updated[0] else 'N/A' }}</span></li>
+                        <li><strong>Status:</strong> <span>{{ domain_info.status | join(', ') if domain_info.status else 'N/A' }}</span></li>
+                        <li><strong>DNSSEC:</strong> <span>{{ domain_info.dnssec or 'N/A' }}</span></li>
+                        <li><strong>Name Servers:</strong> <span>{{ domain_info.name_servers | join(', ') if domain_info.name_servers else 'N/A' }}</span></li>
+                        <li><strong>Registrant:</strong> <span>{{ domain_info.registrant or 'N/A' }}</span></li>
+                        <li><strong>Emails:</strong> <span>{{ domain_info.emails | join(', ') if domain_info.emails else 'N/A' }}</span></li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="result">
+            <p>No domain information available.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

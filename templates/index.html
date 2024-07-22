@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" id="theme-link">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css') }}">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleSwitch = document.querySelector('.switch input[type="checkbox"]');
             const themeLink = document.getElementById('theme-link');
             const form = document.querySelector('form');
             const loader = document.getElementById('wifi-loader');
+            const overlay = document.getElementById('overlay');
 
             toggleSwitch.addEventListener('change', function() {
                 if (toggleSwitch.checked) {
@@ -22,8 +24,28 @@
                 }
             });
 
-            form.addEventListener('submit', function() {
+            form.addEventListener('submit', function(event) {
                 loader.style.display = 'flex'; // Show loader
+                overlay.style.display = 'block'; // Show overlay
+
+                // To prevent the default form submission and manage it with JavaScript
+                event.preventDefault();
+                
+                // Submit the form using Fetch API
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    // Update the content with the new HTML
+                    document.body.innerHTML = html;
+                })
+                .finally(() => {
+                    loader.style.display = 'none'; // Hide loader
+                    overlay.style.display = 'none'; // Hide overlay
+                });
             });
         });
     </script>
@@ -33,255 +55,24 @@
             top: 10px;
             right: 10px;
         }
-
-        /* Loader styles */
-        #wifi-loader {
-            --background: #62abff;
-            --front-color: #10a37f;
-            --back-color: #c3c8de;
-            --text-color: #10a37f;
-            width: 64px;
-            height: 64px;
-            border-radius: 50px;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none; /* Hidden by default */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; /* Ensure the loader is on top */
-        }
-
-        /* Dark background overlay */
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 999; /* Ensure the overlay is below the loader */
-        }
-
-        #wifi-loader svg {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #wifi-loader svg circle {
-            position: absolute;
-            fill: none;
-            stroke-width: 6px;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transform: rotate(-100deg);
-            transform-origin: center;
-        }
-
-        #wifi-loader svg circle.back {
-            stroke: var(--back-color);
-        }
-
-        #wifi-loader svg circle.front {
-            stroke: var(--front-color);
-        }
-
-        #wifi-loader svg.circle-outer {
-            height: 86px;
-            width: 86px;
-        }
-
-        #wifi-loader svg.circle-outer circle {
-            stroke-dasharray: 62.75 188.25;
-        }
-
-        #wifi-loader svg.circle-outer circle.back {
-            animation: circle-outer135 1.8s ease infinite 0.3s;
-        }
-
-        #wifi-loader svg.circle-outer circle.front {
-            animation: circle-outer135 1.8s ease infinite 0.15s;
-        }
-
-        #wifi-loader svg.circle-middle {
-            height: 60px;
-            width: 60px;
-        }
-
-        #wifi-loader svg.circle-middle circle {
-            stroke-dasharray: 42.5 127.5;
-        }
-
-        #wifi-loader svg.circle-middle circle.back {
-            animation: circle-middle6123 1.8s ease infinite 0.25s;
-        }
-
-        #wifi-loader svg.circle-middle circle.front {
-            animation: circle-middle6123 1.8s ease infinite 0.1s;
-        }
-
-        #wifi-loader svg.circle-inner {
-            height: 34px;
-            width: 34px;
-        }
-
-        #wifi-loader svg.circle-inner circle {
-            stroke-dasharray: 22 66;
-        }
-
-        #wifi-loader svg.circle-inner circle.back {
-            animation: circle-inner162 1.8s ease infinite 0.2s;
-        }
-
-        #wifi-loader svg.circle-inner circle.front {
-            animation: circle-inner162 1.8s ease infinite 0.05s;
-        }
-
-        #wifi-loader .text {
-            position: absolute;
-            bottom: -40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-transform: lowercase;
-            font-weight: 500;
-            font-size: 14px;
-            letter-spacing: 0.2px;
-        }
-
-        #wifi-loader .text::before, #wifi-loader .text::after {
-            content: attr(data-text);
-        }
-
-        #wifi-loader .text::before {
-            color: var(--text-color);
-        }
-
-        #wifi-loader .text::after {
-            color: var(--front-color);
-            animation: text-animation76 3.6s ease infinite;
-            position: absolute;
-            left: 0;
-        }
-
-        @keyframes circle-outer135 {
-            0% {
-                stroke-dashoffset: 25;
-            }
-
-            25% {
-                stroke-dashoffset: 0;
-            }
-
-            65% {
-                stroke-dashoffset: 301;
-            }
-
-            80% {
-                stroke-dashoffset: 276;
-            }
-
-            100% {
-                stroke-dashoffset: 276;
-            }
-        }
-
-        @keyframes circle-middle6123 {
-            0% {
-                stroke-dashoffset: 17;
-            }
-
-            25% {
-                stroke-dashoffset: 0;
-            }
-
-            65% {
-                stroke-dashoffset: 204;
-            }
-
-            80% {
-                stroke-dashoffset: 187;
-            }
-
-            100% {
-                stroke-dashoffset: 187;
-            }
-        }
-
-        @keyframes circle-inner162 {
-            0% {
-                stroke-dashoffset: 9;
-            }
-
-            25% {
-                stroke-dashoffset: 0;
-            }
-
-            65% {
-                stroke-dashoffset: 106;
-            }
-
-            80% {
-                stroke-dashoffset: 97;
-            }
-
-            100% {
-                stroke-dashoffset: 97;
-            }
-        }
-
-        @keyframes text-animation76 {
-            0% {
-                clip-path: inset(0 100% 0 0);
-            }
-
-            50% {
-                clip-path: inset(0);
-            }
-
-            100% {
-                clip-path: inset(0 0 0 100%);
-            }
-        }
     </style>
 </head>
 <body>
-    <label class="switch">
-        <input type="checkbox">
-        <span class="slider"></span>
-    </label>
+    {% include 'navbar.html' %}
+
     <div class="container">
         <header class="my-4">
-            <h1>Domain Availability Checker</h1>
+            <h1>DOMAIN AVAILABILITY CHECKER</h1>
         </header>
         <form action="/" method="POST" class="form-container">
             <div class="input-group mb-3">
                 <span class="input-group-icon material-icons-outlined">search</span>
                 <input type="text" name="domain_name" placeholder="Enter Domain Name" class="form-control" required>
             </div>
-            <button type="submit" class="btn">Check Availability</button>
+
+            <button type="submit" class="btn btn-success">Check Availability</button>
         </form>
-        <div id="overlay"></div>
-        <div id="wifi-loader">
-            <svg class="circle-outer" viewBox="0 0 86 86">
-                <circle class="back" cx="43" cy="43" r="40"></circle>
-                <circle class="front" cx="43" cy="43" r="40"></circle>
-                <circle class="new" cx="43" cy="43" r="40"></circle>
-            </svg>
-            <svg class="circle-middle" viewBox="0 0 60 60">
-                <circle class="back" cx="30" cy="30" r="27"></circle>
-                <circle class="front" cx="30" cy="30" r="27"></circle>
-            </svg>
-            <svg class="circle-inner" viewBox="0 0 34 34">
-                <circle class="back" cx="17" cy="17" r="14"></circle>
-                <circle class="front" cx="17" cy="17" r="14"></circle>
-            </svg>
-            <div class="text" data-text="Searching"></div>
-        </div>
+
         {% if specific_domain_result %}
         <div class="result mt-4">
             <p>The domain <strong>{{ specific_domain_result['domain'] }}</strong> is 
@@ -293,7 +84,7 @@
                 {% endif %}
             </p>
             {% if specific_domain_result['available'] %}
-            <a href="https://wa.me/YOUR_PHONE_NUMBER?text=I%20want%20to%20buy%20the%20domain%20{{ specific_domain_result['domain'] }}" class="btn btn-buy">
+            <a href="https://wa.me/9811388848?text=I%20want%20to%20buy%20the%20domain%20{{ specific_domain_result['domain'] }}" class="btn btn-buy">
                 <span class="material-icons-outlined">shopping_cart</span> Buy Now
             </a>
             {% endif %}
@@ -332,13 +123,10 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <form action="/export" method="POST">
-                <input type="hidden" name="results" value="{{ results }}">
-            </form>
         </div>
         {% endif %}
     </div>
+    {% include 'footer.html' %}
 
-    
 </body>
 </html>

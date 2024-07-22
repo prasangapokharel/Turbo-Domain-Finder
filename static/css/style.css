@@ -1,30 +1,24 @@
 body {
     font-family: 'Arial', sans-serif;
-background-color: #e5e5f7;
-opacity: 0.7;
-background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #e5e5f7 4px ), repeating-linear-gradient( #7cff9d55, #f7fff9 );    background-size: cover;
+    background: #FFFFFF;
+    background-size: cover;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
 .container {
     background: rgba(255, 255, 255, 0.826);
     padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 800px;
     text-align: center;
-    margin: 20px 0;
+    margin: 100px auto;
 }
 
 header h1 {
     margin: 0 0 20px;
-    color: #333;
+    color: #666666;
     font-size: 1.8rem;
 }
 
@@ -73,7 +67,25 @@ header h1 {
     align-items: center;
     justify-content: center;
 }
+.btns{
+    background-color: #10a37f;
+    color: white;
+    border: none;
+    padding: 22px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 22px;
+    border-radius: 38px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.btns:hover {
+    background-color: #0e8a68;
+}
 .btn:hover {
     background-color: #0e8a68;
 }
@@ -87,14 +99,17 @@ header h1 {
     margin-right: 5px;
     font-size: 20px;
 }
-p.strong{
+
+p.strong {
     font-size: larger;
 }
-.btn-secondary{
+
+.btn-secondary {
     margin-top: 10px;
     background-color: #333;
     border-radius: 4px;
 }
+
 .result {
     margin-top: 20px;
 }
@@ -157,24 +172,27 @@ p.strong{
         font-size: 0.85rem;
     }
 }
+
 /* The switch - the box around the slider */
 .switch {
     font-size: 17px;
-    position: relative;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     display: inline-block;
     width: 62px;
     height: 35px;
-   }
-   
-   /* Hide default HTML checkbox */
-   .switch input {
+}
+
+/* Hide default HTML checkbox */
+.switch input {
     opacity: 0;
     width: 0;
     height: 0;
-   }
-   
-   /* The slider */
-   .slider {
+}
+
+/* The slider */
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -184,9 +202,9 @@ p.strong{
     background: #ccc;
     transition: .4s;
     border-radius: 30px;
-   }
-   
-   .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 1.9em;
@@ -198,14 +216,13 @@ p.strong{
     background-color: white;
     box-shadow: 0 2px 5px #999999;
     transition: .4s;
-   }
-   
-   input:checked + .slider {
+}
+
+input:checked + .slider {
     background-color: #5fdd54;
     border: 1px solid transparent;
-   }
-   
-   input:checked + .slider:before {
+}
+
+input:checked + .slider:before {
     transform: translateX(1.5em);
-   } 
-   
+}

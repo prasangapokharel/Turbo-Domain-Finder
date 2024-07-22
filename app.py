@@ -1,13 +1,61 @@
-from flask import Flask, render_template, request, session, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for
 import whois
-import io
-from reportlab.pdfgen import canvas
 import concurrent.futures
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Needed for session management
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///domains.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Database model
+class Domain(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    domain_name = db.Column(db.String(255), unique=True, nullable=False)
+    price = db.Column(db.Numeric(10, 2), nullable=False)
+    payment_period = db.Column(db.Enum('Monthly', 'Yearly'), nullable=False)
+    option = db.Column(db.Enum('Buy', 'Sell'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+# Create the database
+with app.app_context():
+    db.create_all()
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        domain_name = request.form['domain_name']
+        price = request.form['price']
+        payment_period = request.form['payment_period']
+        option = request.form['option']
+
+        new_domain = Domain(
+            domain_name=domain_name,
+            price=price,
+            payment_period=payment_period,
+            option=option
+        )
+        db.session.add(new_domain)
+        db.session.commit()
+
+        return redirect(url_for('auction'))
+
+    return render_template('admin.html')
+
+@app.route('/auction')
+def auction():
+    domains = Domain.query.order_by(Domain.created_at.desc()).all()
+    return render_template('auction.html', domains=domains)
+app.secret_key = 'eef3rd'  # Needed for session management
 
 EXTENSIONS = ['.com', '.net', '.org', '.info', '.io']
+
+def format_domain(domain_name):
+    # If no extension is provided, default to ".com"
+    if '.' not in domain_name:
+        domain_name += '.com'
+    return domain_name
 
 def check_domain_availability(domain_name):
     try:
@@ -19,12 +67,6 @@ def check_domain_availability(domain_name):
         return True  # Treat any parsing errors as the domain being available
     except Exception as e:
         return False  # Treat other exceptions as the domain being unavailable
-
-def format_domain(domain_name):
-    # If no extension is provided, default to ".com"
-    if '.' not in domain_name:
-        domain_name += '.com'
-    return domain_name
 
 def check_multiple_extensions(domain_name_base):
     results = {}
@@ -39,6 +81,27 @@ def check_multiple_extensions(domain_name_base):
             except Exception as exc:
                 results[domain_name] = False
     return results
+
+def get_domain_info(domain_name):
+    try:
+        domain = whois.whois(domain_name)
+        domain_info = {
+            'name': domain_name,
+            'tld': domain_name.split('.')[-1],
+            'registrar': domain.registrar,
+            'registrant_country': domain.registrant_country or 'N/A',
+            'creation_date': domain.creation_date,
+            'expiration_date': domain.expiration_date,
+            'last_updated': domain.updated_date if domain.updated_date else ['N/A'],
+            'status': domain.status or ['N/A'],
+            'dnssec': domain.dnssec or 'N/A',
+            'name_servers': domain.name_servers or ['N/A'],
+            'registrant': domain.registrant or 'N/A',
+            'emails': domain.emails or ['N/A']
+        }
+    except Exception as e:
+        domain_info = {'error': str(e)}
+    return domain_info
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -60,22 +123,21 @@ def index():
                 results = check_multiple_extensions(domain_name_base)
     return render_template('index.html', results=results, specific_domain_result=specific_domain_result)
 
-@app.route('/export', methods=['POST'])
-def export():
-    domain_results = request.form.get('results')
-    domain_results = eval(domain_results)  # Convert string back to dictionary
-    
-    buffer = io.BytesIO()
-    c = canvas.Canvas(buffer)
-    c.drawString(100, 750, "Domain Availability Results")
-    y = 720
-    for domain, is_available in domain_results.items():
-        c.drawString(100, y, f"{domain}: {'Available' if is_available else 'Unavailable'}")
-        y -= 20
-    c.save()
-    
-    buffer.seek(0)
-    return send_file(buffer, as_attachment=True, download_name="domain_results.pdf", mimetype='application/pdf')
+@app.route('/domaininfo', methods=['GET', 'POST'])
+def domaininfo():
+    domain_info = None
+    if request.method == 'POST':
+        domain_name = request.form.get('domain_name')
+
+        if domain_name:
+            domain_name = domain_name.replace(" ", "")  # Remove any spaces
+            domain_name = format_domain(domain_name)  # Ensure domain name has a valid extension
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(get_domain_info, domain_name)
+                domain_info = future.result()
+
+    return render_template('domaininfo.html', domain_info=domain_info)
 
 if __name__ == '__main__':
     app.run(debug=True)
