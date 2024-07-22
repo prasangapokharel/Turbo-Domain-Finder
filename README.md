@@ -1,4 +1,7 @@
 ![Home Image](./show.png)
+![Home Image](./show2.png)
+![Home Image](./show3.png)
+
 # Turbo-Domain-Finder
 
 Turbo-Domain-Finder is a Flask-based application designed to help you find domain names quickly and efficiently. This repository contains the code and setup instructions for the project.
